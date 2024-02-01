@@ -1,0 +1,55 @@
+﻿@using static FileManagement.Controllers.HomeController
+   <!-- Views/FileUpload/Index.cshtml -->
+@model FileListViewModel
+
+@{
+    ViewData["Title"] = "File Uploaded One";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}
+
+<h2>Image Files:</h2>
+@foreach (var imageFile in Model.ImageFiles)
+{
+    <div>
+        <img src="~/images/@imageFile.FileName" width="50" height="50" />
+        @* <img src="@Url.Content(imageFile.FilePath)" alt="Image-@imageFile.FileName" class="img-thumbnail" />*@
+        <a href="@Url.Action("Download", new { fileName = imageFile.FileName, fileType = FileType.Image })" class="btn btn-primary">Download</a>
+        <form asp-action="Delete" asp-controller="Home" method="post" style="display:inline;">
+            <input type="hidden" name="fileName" value="@imageFile.FileName" />
+            <input type="hidden" name="fileType" value="@FileType.Image" />
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+}
+
+<h2>PDF Files:</h2>
+@foreach (var pdfFile in Model.PdfFiles)
+{
+    <div>
+        <a href="~/pdfs/facts.pdf" target="_blank">@pdfFile.FileName</a>
+        <embed src="@Url.Content(pdfFile.FilePath)" width="20" height="20" type="application/pdf" />
+        <a href="@Url.Action("Download", new { fileName = pdfFile.FileName, fileType = FileType.Pdf })" class="btn btn-primary">Download</a>
+        <form asp-action="Delete" asp-controller="Home" method="post" style="display:inline;">
+            <input type="hidden" name="fileName" value="@pdfFile.FileName" />
+            <input type="hidden" name="fileType" value="@FileType.Pdf" />
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+}
+
+<hr />
+
+<h2>Upload File:</h2>
+<form asp-action="Upload" asp-controller="Home" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">Choose File:</label>
+        <input type="file" id="file" name="File" class="form-control-file" />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
